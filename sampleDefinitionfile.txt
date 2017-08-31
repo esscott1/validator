@@ -1,0 +1,1 @@
+BigInt|Date|Decimal|Integer|Char|Timestamp|TimeStamp|varchar(50)|int|Char|Char|Integer

@@ -1,0 +1,8 @@
+C:\src\validator\validator\bin\Debug\TextfileValidator.exe.config
+C:\src\validator\validator\bin\Debug\TextfileValidator.exe
+C:\src\validator\validator\bin\Debug\TextfileValidator.pdb
+C:\src\validator\validator\obj\Debug\TextfileValidator.exe
+C:\src\validator\validator\obj\Debug\TextfileValidator.pdb
+C:\src\validator\validator\obj\Debug\TextfileValidator.csprojResolveAssemblyReference.cache
+C:\src\validator\validator\bin\Debug\CommandLine.dll
+C:\src\validator\validator\bin\Debug\CommandLine.xml
