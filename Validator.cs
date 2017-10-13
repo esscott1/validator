@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TextfileValidator
@@ -54,7 +55,7 @@ namespace TextfileValidator
 
 		private static bool IsVarchar(string item, ItemDefintion definition)
 		{
-			return true;
+			return !definition.Length.HasValue || item.Length <= definition.Length;
 		}
 
 		private static bool IsTimeStamp(string item, ItemDefintion definition)
@@ -73,16 +74,29 @@ namespace TextfileValidator
 
 	class ItemDefintion
 	{
-		public ItemDefintion()
+        private static Regex varcharLimitedLengthRegex = new Regex(@"varchar\((\d+)\)");
+        public ItemDefintion()
 		{ }
 		public ItemDefintion(string type)
 		{
-			Type = type;
+            originalType = type;
+            Match m = varcharLimitedLengthRegex.Match(type);
+            if (m.Success)
+            {
+                Type = "varchar";
+                Length = int.Parse(m.Groups[1].Value);
+            }
+            else
+            {
+                Type = type;
+                Length = null;
+            }
 		}
 		public string Type { get; set; }
-		public string Precision { get; set; }
-		public string Length {get;set;}
+        public string Precision { get; set; }
+		public int? Length {get;set;}
 		public string scale {get;set;}
+        public string originalType { get; set; }
 
 	}
 

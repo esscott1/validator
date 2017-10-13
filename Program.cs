@@ -13,7 +13,7 @@ namespace TextfileValidator
 	{
 		static void Main(string[] args)
         {
-            ValidateFile();
+            ValidateFile(args);
           //  MakeFile();
         }
         private static void MakeFile()
@@ -60,23 +60,23 @@ namespace TextfileValidator
             var result = v.IsValid(item, new ItemDefintion(type));
             return result;
         }
-        private static void ValidateFile()
+        private static void ValidateFile(string[] args)
         {
             Validator v = new Validator(); System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             var options = new Options();
-            //if (CommandLine.Parser.Default.ParseArguments(args, options))
-            //{
+            var isValid = CommandLine.Parser.Default.ParseArgumentsStrict(args, options);
 
             timer.Start();
+            Console.WriteLine("definition file {0} delimiting by {1}", options.DefinitionFilePath, Char.Parse(options.Delimiter));
             Console.WriteLine("reading file {0} delimiting by {1}", options.InputFile, Char.Parse(options.Delimiter));
             Console.WriteLine();
-            string line; string[] items; string[] types; Int64 lineCount = 0; Int64 itemCount = 0; ItemDefintion def = new ItemDefintion();
+            string line; string[] items; Int64 lineCount = 0; Int64 itemCount = 0; ItemDefintion def = new ItemDefintion();
             int trues = 0; int falses = 0; bool result; TimeSpan ts = new TimeSpan();
-            //StreamReader r = new StreamReader(@"C:\Projects\Playground\Eric.Scott\TextfileValidator\bin\Debug\sampleDatafile.txt");
+          
             StreamReader r2 = new StreamReader(options.DefinitionFilePath);
             string line2 = r2.ReadLine();
             r2.Close();
-            types = line2.Split(new char[] { Char.Parse(options.Delimiter) });
+            List<ItemDefintion> types = line2.Split(new char[] { Char.Parse(options.Delimiter) }).Select(type => new ItemDefintion(type)).ToList();
             int numTypes = types.Count();
             StreamReader r = new StreamReader(options.InputFile);
             
@@ -104,19 +104,19 @@ namespace TextfileValidator
                     Console.WriteLine("ERROR:  expected more or less items in line # {0}", lineCount);
                 }
 
-                for (int i = 0; i < items.Count(); i++)
+                for (int i = 0; i < numTypes; i++)
                 {
-                    def.Type = types[i];
-                    result = v.IsValid(items[i], def); // takes about 150 ticks to do this.  threading overhead will not speed ths up
-                    result = true;
+                    //def.Type = types[i];
+                    result = v.IsValid(items[i], types[i]); // takes about 150 ticks to do this.  threading overhead will not speed ths up
+                    //result = true;
                     if (result)
                         trues++;
                     else
                     {
-                        Console.WriteLine("failure:  row #{0}  item#{1} value: {2}  not a {3}", lineCount, i, items[i], types[i]);
+                        Console.WriteLine("failure:  row #{0}  item#{1} value: {2}  not a {3}", lineCount, i, items[i], types[i].originalType);
                         Console.WriteLine("the line is");
                         Console.WriteLine(line);//r.Close();
-                        break;
+                        //break;
                         falses++;
                     }
                     //Console.WriteLine("Item: {0} validation test is: {1} for type {2}", items[i], v.IsValid(items[i], def), types[i]);
